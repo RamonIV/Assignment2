@@ -206,16 +206,64 @@ public class seriousProgramName {
 		btnCheckOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				float totalTimeRebookedCost = timesRebooked * 3;
-				float totalTimeCost = Streetz[findStreetID((String)StreetNamesComboBox.getSelectedItem())].getCost() * 2;
 				Date timeRnFam = new Date();
-				totalCost = (float) (((timeRnFam.getTime() - dateobj.getTime()) / 360000) + (timesRebooked * 3.50));
+				float totalTimeCost = (timeRnFam.getTime() - dateobj.getTime()) / 360000;
+				
+				if( totalTimeCost < 1)
+					totalCost = (float) ((Streetz[findStreetID((String)StreetNamesComboBox.getSelectedItem())].getCost()) + (timesRebooked * 3.50));
+				else
+					totalCost = (float) (((Streetz[findStreetID((String)StreetNamesComboBox.getSelectedItem())].getCost()) * 2) + (timesRebooked * 3.50));
+				
+				//totalCost = (float) (((timeRnFam.getTime() - dateobj.getTime()) / 360000) + (timesRebooked * 3.50));
 			
 				btnPayNow.setEnabled(true);
 				Cost.setText(Float.toString(totalCost));
 			}
 			
 		});
+		
+		btnPayNow.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				String dbUrl = "jdbc:mysql://localhost:3306/assignment2data";
+				String user = "root";
+				String password = "1234";
+				dateobj = new Date();
+				
+				
+				try 
+				{
+					Connection myConn = DriverManager.getConnection(dbUrl, user, password);
+					
+					String query = "update parkinginfo set NumberOfParks = ? where StreetID = ?"; 
+					PreparedStatement preparedStmt = myConn.prepareStatement(query);
+				    preparedStmt.setInt   (1, (((Streetz[findStreetID((String)StreetNamesComboBox.getSelectedItem())].getAmountOfParks())) + 1) );
+					
+				    preparedStmt.setInt(2, (Streetz[findStreetID((String)StreetNamesComboBox.getSelectedItem())].getId()));
+				    preparedStmt.executeUpdate();
+				    myConn.close();
+				    preparedStmt.close();
+				    
+				    btnBook.setEnabled(true);
+				    btnCheckOut.setEnabled(false);
+				    btnRebook.setEnabled(false);
+				    lblTimeBooked.setEnabled(false);
+				    btnPayNow.setEnabled(false);
+				    TimeParkBooked.setText();
+				    Cost.setText(Float.toString());
+				    timesRebooked = 0;
+				    AmountRebooked.setText(Integer.toString(timesRebooked));
+				    
+				    freeParksText.setText(Integer.toString((Streetz[findStreetID((String)StreetNamesComboBox.getSelectedItem())].getAmountOfParks())));
+					
+					
+				} catch (SQLException e1) {
+					
+				}
+				
+			}
+		}
 		
 		}
 	
