@@ -4,9 +4,14 @@ import java.util.ArrayList;
 
 public class DBConnect 
 {
-	static ArrayList<String> StreetNames = new ArrayList<String>();
+	static ArrayList<Street> Streetz = new ArrayList<Street>();
 	
 	public static void main(String[] args) 
+	{
+
+	}
+	
+	public Street[] returnStreetNames()
 	{
 		String dbUrl = "jdbc:mysql://localhost:3306/assignment2data";
 		String user = "root";
@@ -14,9 +19,10 @@ public class DBConnect
 		int lastStreetID = 3;
 		PreparedStatement myStat = null;
 		ResultSet myRs = null;
-		String fuckfuckfuck;
-		String[] fuckfuckfucking = null;
-		
+		String StreetNamee;
+		int StreetId;
+		int AmountOfParks;
+		float cost;
 		try 
 		{
 			Connection myConn = DriverManager.getConnection(dbUrl, user, password);
@@ -28,9 +34,12 @@ public class DBConnect
 				myRs=myStat.executeQuery();
 				if(myRs.next())
 					{
-						fuckfuckfuck=myRs.getString("StreetName");
-						System.out.println(fuckfuckfuck);
-						StreetNames.add(fuckfuckfuck);
+						StreetNamee=myRs.getString("StreetName");
+						StreetId = myRs.getInt("StreetID");
+						AmountOfParks = myRs.getInt("NumberOfParks");
+						cost = myRs.getFloat("Cost");
+						
+						Streetz.add(new Street(StreetId, StreetNamee, AmountOfParks, cost));
 					}
 			}
 			
@@ -40,12 +49,12 @@ public class DBConnect
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public String[] returnStreetNames()
-	{
-		String[] tempArray = new String[StreetNames.size()];
-		StreetNames.toArray(tempArray);
+		
+		
+		
+		
+		Street[] tempArray = new Street[Streetz.size()];
+		Streetz.toArray(tempArray);
 		return tempArray;
 		
 	}
