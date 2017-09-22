@@ -23,6 +23,8 @@ public class DBConnect
 		int StreetId;
 		int AmountOfParks;
 		float cost;
+		
+		Streetz.clear();
 		try 
 		{
 			Connection myConn = DriverManager.getConnection(dbUrl, user, password);
